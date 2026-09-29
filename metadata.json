@@ -1,0 +1,11 @@
+{
+  "name": "Massi English Explorer - Term 1 Phygital Learning",
+  "description": "Plateforme d'apprentissage de l'anglais pour le Premier Terme (Term 1) combinant reconnaissance visuelle (table phygitale), reconnaissance vocale et jeux interactifs avec Massi le Fennec.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
