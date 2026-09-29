@@ -2,6 +2,7 @@ import React from 'react';
 import { ArrowRight, Sparkles, CheckCircle2, Trophy, Play, Star, BookOpen, Layers } from 'lucide-react';
 import { ACTIVITIES_LIST } from '../data/curriculumData';
 import { ActivityId } from '../types';
+import fennecLogo from '../assets/images/massi_fennec_mascot_1790628791368.jpg';
 
 interface ActivityHubProps {
   onSelectActivity: (id: ActivityId) => void;
@@ -42,23 +43,32 @@ export const ActivityHub: React.FC<ActivityHubProps> = ({
   return (
     <div className="space-y-6">
       {/* Welcome Hero Banner */}
-      <div className="p-6 bg-gradient-to-r from-amber-500 via-amber-600 to-orange-500 text-white rounded-3xl shadow-lg flex flex-col md:flex-row items-center justify-between gap-6">
-        <div>
-          <div className="flex flex-wrap items-center gap-2 mb-1">
-            <span className="text-xs font-bold uppercase tracking-wider text-amber-200 font-mono">
-              Premier Terme · Term 1 Explorer
-            </span>
-            <span className="text-[11px] bg-emerald-950/60 text-emerald-200 border border-emerald-400/50 px-2 py-0.5 rounded-full font-bold font-heading flex items-center gap-1">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-              Reconnaissance Visuelle OCR (Tesseract) : Activée
-            </span>
+      <div className="p-4 sm:p-6 bg-gradient-to-r from-amber-500 via-amber-600 to-orange-500 text-white rounded-3xl shadow-lg flex flex-col md:flex-row items-center justify-between gap-4 sm:gap-6">
+        <div className="flex items-center gap-4">
+          <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl overflow-hidden border-2 border-white/60 bg-white/20 shadow-md shrink-0 hidden sm:block">
+            <img
+              src={fennecLogo}
+              alt="Massi le Fennec"
+              className="w-full h-full object-cover"
+            />
           </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold font-heading mt-1">
-            Sommaire des 10 Activités Pédagogiques
-          </h1>
-          <p className="text-sm text-amber-100 max-w-xl mt-1.5 leading-relaxed">
-            Chaque activité est autonome et dispose de sa propre page dédiée combinant la reconnaissance visuelle (Caméra OCR Tesseract pour cartes et lettres), la reconnaissance vocale et le tactile.
-          </p>
+          <div>
+            <div className="flex flex-wrap items-center gap-2 mb-1">
+              <span className="text-xs font-bold uppercase tracking-wider text-amber-200 font-mono">
+                Premier Terme · Term 1 Explorer
+              </span>
+              <span className="text-[11px] bg-emerald-950/60 text-emerald-200 border border-emerald-400/50 px-2 py-0.5 rounded-full font-bold font-heading flex items-center gap-1">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                Reconnaissance Visuelle OCR (Tesseract) : Activée
+              </span>
+            </div>
+            <h1 className="text-xl sm:text-3xl font-extrabold font-heading mt-1">
+              Sommaire des 10 Activités Pédagogiques
+            </h1>
+            <p className="text-xs sm:text-sm text-amber-100 max-w-xl mt-1.5 leading-relaxed">
+              Chaque activité est autonome et dispose de sa propre page dédiée combinant la reconnaissance visuelle (Caméra OCR Tesseract pour cartes et lettres), la reconnaissance vocale et le tactile.
+            </p>
+          </div>
         </div>
 
         <div className="flex items-center gap-3 shrink-0 bg-white/15 backdrop-blur-md p-3.5 rounded-2xl border border-white/20">

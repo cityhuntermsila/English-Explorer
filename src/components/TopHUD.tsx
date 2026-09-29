@@ -2,6 +2,7 @@ import React from 'react';
 import { Volume2, VolumeX, Printer, Award, Sparkles, BookOpen, LayoutGrid, Camera } from 'lucide-react';
 import { ModuleTab, ActivityId } from '../types';
 import { soundManager } from '../utils/audio';
+import fennecLogo from '../assets/images/massi_fennec_mascot_1790628791368.jpg';
 
 interface TopHUDProps {
   currentTab: ModuleTab | 'hub';
@@ -39,9 +40,18 @@ export const TopHUD: React.FC<TopHUDProps> = ({
         <button
           type="button"
           onClick={() => onSelectTab('hub')}
-          className="text-lg sm:text-2xl font-extrabold tracking-tight text-amber-900 font-heading cursor-pointer text-left truncate"
+          className="flex items-center gap-2.5 cursor-pointer text-left group"
         >
-          Massi English Explorer
+          <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl overflow-hidden border-2 border-amber-400 bg-amber-100 shadow-xs shrink-0 group-hover:scale-105 transition-transform">
+            <img
+              src={fennecLogo}
+              alt="Massi le Fennec"
+              className="w-full h-full object-cover"
+            />
+          </div>
+          <span className="text-lg sm:text-2xl font-extrabold tracking-tight text-amber-900 font-heading truncate">
+            Massi English Explorer
+          </span>
         </button>
 
         {/* Compact Mobile Quick Stats */}
