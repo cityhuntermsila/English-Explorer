@@ -43,11 +43,17 @@ export const Activity2PhonicsPop: React.FC<ActivityProps> = ({
     { id: 'b9', word: 'IN', phonics: '/ɪn/', isTarget: true, popped: false },
   ];
 
-  const [bubbles, setBubbles] = useState<BubbleWord[]>(initialBubbles);
+  const [bubbles, setBubbles] = useState<BubbleWord[]>([]);
   const [hearts, setHearts] = useState<number>(5);
   const [isCompleted, setIsCompleted] = useState<boolean>(false);
   const [isListeningMic, setIsListeningMic] = useState<boolean>(false);
   const [transcript, setTranscript] = useState<string>('');
+
+  // Shuffle bubbles on component mount to randomize order
+  useEffect(() => {
+    const shuffled = [...initialBubbles].sort(() => Math.random() - 0.5);
+    setBubbles(shuffled);
+  }, []);
 
   const targetCount = initialBubbles.filter(b => b.isTarget).length;
   const currentPoppedTargets = bubbles.filter(b => b.isTarget && b.popped).length;

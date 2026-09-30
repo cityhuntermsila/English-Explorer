@@ -48,7 +48,14 @@ export const Activity10TermTest: React.FC<ActivityProps> = ({
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [isDrawing, setIsDrawing] = useState<boolean>(false);
   const [strokeCount, setStrokeCount] = useState<number>(0);
-  const phase3Letters = ['b', 'k', 'i'];
+  const [shuffledPhase3Letters, setShuffledPhase3Letters] = useState<string[]>(['b', 'k', 'i']);
+
+  // Randomize questions on mount
+  useEffect(() => {
+    setPhase2Word(Math.random() > 0.5 ? 'sister' : 'duck');
+    const letters = ['b', 'k', 'i'].sort(() => Math.random() - 0.5);
+    setShuffledPhase3Letters(letters);
+  }, []);
 
   // Global Countdown
   useEffect(() => {
@@ -157,7 +164,7 @@ export const Activity10TermTest: React.FC<ActivityProps> = ({
 
   const validateLetterTracing = () => {
     soundManager.playSuccess();
-    if (phase3LetterIdx < phase3Letters.length - 1) {
+    if (phase3LetterIdx < shuffledPhase3Letters.length - 1) {
       setPhase3LetterIdx(i => i + 1);
       clearCanvas();
     } else {
@@ -244,12 +251,12 @@ export const Activity10TermTest: React.FC<ActivityProps> = ({
             handlePhase2Say(query);
           }
         } else if (currentPhase === 3) {
-          const currentExpected = phase3Letters[phase3LetterIdx].toUpperCase();
+          const currentExpected = shuffledPhase3Letters[phase3LetterIdx].toUpperCase();
           if (query.includes(currentExpected)) {
             soundManager.playSuccess();
             setStrokeCount(10);
             setPhase3Score(prev => Math.min(6, prev + 2));
-            if (phase3LetterIdx < phase3Letters.length - 1) {
+            if (phase3LetterIdx < shuffledPhase3Letters.length - 1) {
               setPhase3LetterIdx(i => i + 1);
             }
           }
@@ -397,7 +404,7 @@ export const Activity10TermTest: React.FC<ActivityProps> = ({
                 Épreuve 3 · Tracé script sur ardoise (6 points)
               </span>
               <h3 className="text-base sm:text-lg font-black font-heading text-slate-900">
-                Trace la lettre : « {phase3Letters[phase3LetterIdx].toUpperCase()} » ({phase3LetterIdx + 1}/3)
+                Trace la lettre : « {shuffledPhase3Letters[phase3LetterIdx].toUpperCase()} » ({phase3LetterIdx + 1}/3)
               </h3>
             </div>
 
@@ -411,7 +418,7 @@ export const Activity10TermTest: React.FC<ActivityProps> = ({
 
               {/* Watermark Letter Template */}
               <div className="absolute inset-0 pointer-events-none flex items-center justify-center font-heading text-8xl font-black text-slate-200 select-none">
-                {phase3Letters[phase3LetterIdx]}
+                {shuffledPhase3Letters[phase3LetterIdx]}
               </div>
 
               <canvas

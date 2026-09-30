@@ -32,6 +32,7 @@ export const Activity6FamilyRace: React.FC<ActivityProps> = ({
     { id: 'grandpa', role: 'Grandfather', icon: '👴', targetWord: 'GRAND' },
   ];
 
+  const [shuffledFamilyList, setShuffledFamilyList] = useState<typeof familyList>([]);
   const [placed, setPlaced] = useState<string[]>([]);
   const [timeLeft, setTimeLeft] = useState<number>(45);
   const [isRunning, setIsRunning] = useState<boolean>(false);
@@ -39,6 +40,14 @@ export const Activity6FamilyRace: React.FC<ActivityProps> = ({
   const [hearts, setHearts] = useState<number>(5);
   const [isListeningMic, setIsListeningMic] = useState<boolean>(false);
   const [transcript, setTranscript] = useState<string>('');
+
+  // Shuffle family list on component mount to randomize rounds
+  useEffect(() => {
+    const shuffled = [...familyList].sort(() => Math.random() - 0.5);
+    setShuffledFamilyList(shuffled);
+  }, []);
+
+  const activeFamilyList = shuffledFamilyList.length > 0 ? shuffledFamilyList : familyList;
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
@@ -74,10 +83,10 @@ export const Activity6FamilyRace: React.FC<ActivityProps> = ({
       const next = [...placed, id];
       setPlaced(next);
 
-      const member = familyList.find(f => f.id === id);
+      const member = activeFamilyList.find(f => f.id === id);
       if (member) soundManager.speak(member.role, 'en-US');
 
-      if (next.length === familyList.length) {
+      if (next.length === activeFamilyList.length) {
         setIsRunning(false);
         setIsCompleted(true);
         onAwardStars(5);
@@ -88,7 +97,7 @@ export const Activity6FamilyRace: React.FC<ActivityProps> = ({
     }
   };
 
-  const currentTarget = familyList.find(f => !placed.includes(f.id)) || familyList[0];
+  const currentTarget = activeFamilyList.find(f => !placed.includes(f.id)) || activeFamilyList[0];
 
   const toggleMic = () => {
     if (isListeningMic) {
@@ -101,7 +110,7 @@ export const Activity6FamilyRace: React.FC<ActivityProps> = ({
         (text) => {
           setTranscript(text);
           const upper = text.toUpperCase();
-          const match = familyList.find(
+          const match = activeFamilyList.find(
             f => !placed.includes(f.id) && (upper.includes(f.role.toUpperCase()) || upper.includes(f.targetWord))
           );
           if (match) handlePlace(match.id);
@@ -118,10 +127,10 @@ export const Activity6FamilyRace: React.FC<ActivityProps> = ({
       unit="Unit 1"
       unitTag="unit-1"
       pageIndex={6}
-      totalSteps={familyList.length}
+      totalSteps={activeFamilyList.length}
       currentStep={placed.length}
       targetWord={currentTarget.targetWord}
-      revealedIndices={placed.length === familyList.length ? [0, 1, 2, 3, 4] : []}
+      revealedIndices={placed.length === activeFamilyList.length ? [0, 1, 2, 3, 4] : []}
       promptEnglish={`Assemble the full family tree in under 45 seconds! Next: ${currentTarget.role}!`}
       promptFrench={`Reconstitue l'arbre généalogique en moins de 45 secondes ! Suivant : ${currentTarget.role} !`}
       mascotSpeech={
@@ -143,13 +152,13 @@ export const Activity6FamilyRace: React.FC<ActivityProps> = ({
       transcript={transcript}
       onToggleMic={toggleMic}
       onLetterTileClick={(l) => {
-        const match = familyList.find(f => !placed.includes(f.id) && f.role.startsWith(l.toUpperCase()));
+        const match = activeFamilyList.find(f => !placed.includes(f.id) && f.role.startsWith(l.toUpperCase()));
         if (match) handlePlace(match.id);
       }}
-      expectedTargets={familyList.filter(f => !placed.includes(f.id)).map(f => f.role.toUpperCase())}
+      expectedTargets={activeFamilyList.filter(f => !placed.includes(f.id)).map(f => f.role.toUpperCase())}
       onScanResult={(text, match) => {
         const query = (match || text).toUpperCase();
-        const found = familyList.find(f => !placed.includes(f.id) && query.includes(f.role.toUpperCase()));
+        const found = activeFamilyList.find(f => !placed.includes(f.id) && query.includes(f.role.toUpperCase()));
         if (found) handlePlace(found.id);
       }}
     >
@@ -187,23 +196,23 @@ export const Activity6FamilyRace: React.FC<ActivityProps> = ({
         </div>
 
         {/* Tree Frame Slots */}
-        <div className="flex flex-wrap items-center justify-center gap-3">
-          {familyList.map((f) => {
+        <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3">
+          {activeFamilyList.map((f) => {
             const isDone = placed.includes(f.id);
             return (
               <button
                 key={f.id}
                 type="button"
                 onClick={() => handlePlace(f.id)}
-                className={`w-20 h-24 sm:w-24 sm:h-28 rounded-2xl flex flex-col items-center justify-center font-heading transition-all border-3 ${
+                className={`w-16 h-20 sm:w-20 sm:h-24 md:w-22 md:h-26 rounded-xl sm:rounded-2xl flex flex-col items-center justify-center font-heading transition-all border-2 sm:border-3 ${
                   isDone
-                    ? 'bg-white text-blue-700 border-amber-300 shadow-2xl scale-105 pointer-events-none'
+                    ? 'bg-white text-blue-700 border-amber-300 shadow-xl scale-105 pointer-events-none'
                     : 'bg-white/25 border-dashed border-white/60 hover:bg-white/40 cursor-pointer text-white hover:scale-105'
                 }`}
               >
-                <span className="text-3xl sm:text-4xl mb-1">{f.icon}</span>
-                <span className="text-xs font-black drop-shadow-sm">{f.role}</span>
-                {isDone && <CheckCircle2 className="w-4 h-4 text-emerald-600 mt-1" />}
+                <span className="text-2xl sm:text-3xl mb-0.5">{f.icon}</span>
+                <span className="text-[11px] sm:text-xs font-black drop-shadow-sm">{f.role}</span>
+                {isDone && <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 mt-0.5" />}
               </button>
             );
           })}

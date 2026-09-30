@@ -62,6 +62,7 @@ export const Activity7HideSeek: React.FC<ActivityProps> = ({
     },
   ];
 
+  const [shuffledRounds, setShuffledRounds] = useState<typeof prepositionRounds>([]);
   const [currentStep, setCurrentStep] = useState<number>(0);
   const [revealedIndices, setRevealedIndices] = useState<number[]>([]);
   const [hearts, setHearts] = useState<number>(5);
@@ -70,13 +71,21 @@ export const Activity7HideSeek: React.FC<ActivityProps> = ({
   const [transcript, setTranscript] = useState<string>('');
   const [selectedItem, setSelectedItem] = useState<string>('Blue Pen');
 
-  const currentRound = prepositionRounds[currentStep] || prepositionRounds[0];
+  // Shuffle preposition rounds on component mount
+  useEffect(() => {
+    const shuffled = [...prepositionRounds].sort(() => Math.random() - 0.5);
+    setShuffledRounds(shuffled);
+  }, []);
+
+  const currentRound = shuffledRounds[currentStep] || prepositionRounds[currentStep] || prepositionRounds[0];
   const targetLetters = currentRound.targetWord.split('');
 
   useEffect(() => {
-    setRevealedIndices([]);
-    soundManager.speak(currentRound.instruction, 'en-US');
-  }, [currentStep]);
+    if (shuffledRounds.length > 0) {
+      setRevealedIndices([]);
+      soundManager.speak(currentRound.instruction, 'en-US');
+    }
+  }, [currentStep, shuffledRounds]);
 
   const handleLocationClick = (locKey: string) => {
     if (locKey === currentRound.location) {

@@ -26,13 +26,20 @@ export const Activity3AlphabetDash: React.FC<ActivityProps> = ({
 }) => {
   const targetAlphabet = ['I', 'J', 'L', 'T', 'U'];
   const [placedLetters, setPlacedLetters] = useState<string[]>([]);
-  const [scrambled, setScrambled] = useState<string[]>(['U', 'I', 'T', 'J', 'L']);
+  const [scrambled, setScrambled] = useState<string[]>([]);
   const [timeLeft, setTimeLeft] = useState<number>(30);
   const [isRunning, setIsRunning] = useState<boolean>(false);
   const [isCompleted, setIsCompleted] = useState<boolean>(false);
   const [hearts, setHearts] = useState<number>(5);
   const [isListeningMic, setIsListeningMic] = useState<boolean>(false);
   const [transcript, setTranscript] = useState<string>('');
+
+  // Shuffle scrambled letters on component mount
+  useEffect(() => {
+    const initialScrambled = ['U', 'I', 'T', 'J', 'L'];
+    const shuffled = [...initialScrambled].sort(() => Math.random() - 0.5);
+    setScrambled(shuffled);
+  }, []);
 
   // Timer countdown
   useEffect(() => {
@@ -194,20 +201,20 @@ export const Activity3AlphabetDash: React.FC<ActivityProps> = ({
         </div>
 
         {/* Target Alphabet Order Slots */}
-        <div className="flex items-center justify-center gap-2 sm:gap-3">
+        <div className="flex items-center justify-center gap-1.5 sm:gap-2.5">
           {targetAlphabet.map((letter, idx) => {
             const isFilled = placedLetters.includes(letter);
             return (
               <div
                 key={idx}
-                className={`w-14 h-18 sm:w-18 sm:h-22 rounded-2xl flex flex-col items-center justify-center font-black font-heading transition-all ${
+                className={`w-10 h-13 sm:w-14 sm:h-18 md:w-16 md:h-20 rounded-xl sm:rounded-2xl flex flex-col items-center justify-center font-black font-heading transition-all ${
                   isFilled
-                    ? 'bg-white text-blue-600 border-4 border-amber-300 shadow-2xl scale-105'
-                    : 'bg-white/20 border-3 border-dashed border-white/40 text-white/50'
+                    ? 'bg-white text-blue-600 border-2 sm:border-4 border-amber-300 shadow-xl scale-105'
+                    : 'bg-white/20 border-2 border-dashed border-white/40 text-white/50'
                 }`}
               >
-                <span className="text-3xl sm:text-4xl">{isFilled ? letter : '?'}</span>
-                <span className="text-[10px] font-mono uppercase mt-1 opacity-70">
+                <span className="text-2xl sm:text-3xl md:text-4xl">{isFilled ? letter : '?'}</span>
+                <span className="text-[9px] sm:text-[10px] font-mono uppercase mt-0.5 opacity-70">
                   #{idx + 1}
                 </span>
               </div>
@@ -216,7 +223,7 @@ export const Activity3AlphabetDash: React.FC<ActivityProps> = ({
         </div>
 
         {/* Scrambled Available Letters Shelf */}
-        <div className="flex items-center gap-2.5 p-3 bg-black/40 backdrop-blur-md rounded-2xl border border-white/20">
+        <div className="flex items-center gap-1.5 sm:gap-2.5 p-2 sm:p-2.5 bg-black/40 backdrop-blur-md rounded-xl sm:rounded-2xl border border-white/20">
           <span className="text-xs font-bold text-amber-200 font-heading mr-1">
             Choisis la suivante :
           </span>
@@ -225,7 +232,7 @@ export const Activity3AlphabetDash: React.FC<ActivityProps> = ({
               key={l}
               type="button"
               onClick={() => handleSelectLetter(l)}
-              className="w-12 h-14 sm:w-14 sm:h-16 rounded-2xl bg-white text-slate-900 shadow-xl flex items-center justify-center font-black text-2xl sm:text-3xl font-heading hover:scale-110 active:scale-95 cursor-pointer border-2 border-slate-300"
+              className="w-9 h-11 sm:w-11 sm:h-13 rounded-xl bg-white text-slate-900 shadow-lg flex items-center justify-center font-black text-xl sm:text-2xl font-heading hover:scale-110 active:scale-95 cursor-pointer border-2 border-slate-300"
             >
               {l}
             </button>

@@ -32,6 +32,7 @@ export const Activity9ColorBlitz: React.FC<ActivityProps> = ({
     { target: 'Orange book!', color: 'Orange', item: 'Book', icon: '📖', colorHex: 'bg-orange-500', word: 'ORANGE' },
   ];
 
+  const [shuffledRounds, setShuffledRounds] = useState<typeof blitzRounds>([]);
   const [currentStep, setCurrentStep] = useState<number>(0);
   const [timeLeft, setTimeLeft] = useState<number>(6);
   const [isRunning, setIsRunning] = useState<boolean>(false);
@@ -41,7 +42,13 @@ export const Activity9ColorBlitz: React.FC<ActivityProps> = ({
   const [isListeningMic, setIsListeningMic] = useState<boolean>(false);
   const [transcript, setTranscript] = useState<string>('');
 
-  const currentRound = blitzRounds[currentStep] || blitzRounds[0];
+  // Shuffle blitz rounds on component mount
+  useEffect(() => {
+    const shuffled = [...blitzRounds].sort(() => Math.random() - 0.5);
+    setShuffledRounds(shuffled);
+  }, []);
+
+  const currentRound = shuffledRounds[currentStep] || blitzRounds[currentStep] || blitzRounds[0];
 
   useEffect(() => {
     let interval: NodeJS.Timeout;

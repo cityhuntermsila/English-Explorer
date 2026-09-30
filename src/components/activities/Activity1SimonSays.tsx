@@ -66,6 +66,7 @@ export const Activity1SimonSays: React.FC<ActivityProps> = ({
     },
   ];
 
+  const [shuffledSteps, setShuffledSteps] = useState<typeof steps>([]);
   const [currentStep, setCurrentStep] = useState<number>(0);
   const [revealedIndices, setRevealedIndices] = useState<number[]>([]);
   const [hearts, setHearts] = useState<number>(5);
@@ -73,13 +74,21 @@ export const Activity1SimonSays: React.FC<ActivityProps> = ({
   const [isListeningMic, setIsListeningMic] = useState<boolean>(false);
   const [transcript, setTranscript] = useState<string>('');
 
-  const currentRound = steps[currentStep] || steps[0];
+  // Shuffle steps on component mount to randomize questions
+  useEffect(() => {
+    const shuffled = [...steps].sort(() => Math.random() - 0.5);
+    setShuffledSteps(shuffled);
+  }, []);
+
+  const currentRound = shuffledSteps[currentStep] || steps[currentStep] || steps[0];
   const targetLetters = currentRound.targetWord.split('');
 
   useEffect(() => {
-    setRevealedIndices([]);
-    soundManager.speak(currentRound.command, 'en-US');
-  }, [currentStep]);
+    if (shuffledSteps.length > 0) {
+      setRevealedIndices([]);
+      soundManager.speak(currentRound.command, 'en-US');
+    }
+  }, [currentStep, shuffledSteps]);
 
   const handleCardClick = (actionKey: string) => {
     if (actionKey === currentRound.actionKey) {
@@ -191,7 +200,7 @@ export const Activity1SimonSays: React.FC<ActivityProps> = ({
       }}
     >
       {/* Interactive School Objects & Action Cards directly on screen */}
-      <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 sm:gap-3 max-w-2xl mx-auto">
+      <div className="grid grid-cols-3 sm:grid-cols-6 gap-1.5 sm:gap-2.5 max-w-2xl mx-auto w-full">
         {[
           { key: 'pencil', label: 'Pencil', icon: '✏️', color: 'from-amber-400 to-yellow-500' },
           { key: 'book', label: 'Book', icon: '📖', color: 'from-red-400 to-rose-500' },
@@ -206,12 +215,12 @@ export const Activity1SimonSays: React.FC<ActivityProps> = ({
               key={item.key}
               type="button"
               onClick={() => handleCardClick(item.key)}
-              className={`flex flex-col items-center justify-center p-3 rounded-2xl bg-gradient-to-b ${item.color} text-white shadow-xl border-2 transition-all hover:scale-105 active:scale-95 cursor-pointer select-none font-heading ${
-                isTarget ? 'border-amber-300 ring-4 ring-amber-300/40 animate-pulse' : 'border-white/50 opacity-90 hover:opacity-100'
+              className={`flex flex-col items-center justify-center p-2 sm:p-2.5 rounded-xl sm:rounded-2xl bg-gradient-to-b ${item.color} text-white shadow-lg border-2 transition-all hover:scale-105 active:scale-95 cursor-pointer select-none font-heading ${
+                isTarget ? 'border-amber-300 ring-2 sm:ring-4 ring-amber-300/40 animate-pulse' : 'border-white/50 opacity-90 hover:opacity-100'
               }`}
             >
-              <span className="text-3xl sm:text-4xl mb-1 drop-shadow-md">{item.icon}</span>
-              <span className="text-xs sm:text-sm font-black drop-shadow-sm">{item.label}</span>
+              <span className="text-2xl sm:text-3xl mb-0.5 drop-shadow-md">{item.icon}</span>
+              <span className="text-[11px] sm:text-xs font-black drop-shadow-sm">{item.label}</span>
             </button>
           );
         })}

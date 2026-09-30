@@ -71,6 +71,7 @@ export const Activity4PhotoAlbum: React.FC<ActivityProps> = ({
     },
   ];
 
+  const [shuffledRounds, setShuffledRounds] = useState<typeof familyRounds>([]);
   const [currentStep, setCurrentStep] = useState<number>(0);
   const [revealedIndices, setRevealedIndices] = useState<number[]>([]);
   const [hearts, setHearts] = useState<number>(5);
@@ -78,13 +79,21 @@ export const Activity4PhotoAlbum: React.FC<ActivityProps> = ({
   const [isListeningMic, setIsListeningMic] = useState<boolean>(false);
   const [transcript, setTranscript] = useState<string>('');
 
-  const currentRound = familyRounds[currentStep] || familyRounds[0];
+  // Shuffle rounds on component mount to randomize questions
+  useEffect(() => {
+    const shuffled = [...familyRounds].sort(() => Math.random() - 0.5);
+    setShuffledRounds(shuffled);
+  }, []);
+
+  const currentRound = shuffledRounds[currentStep] || familyRounds[currentStep] || familyRounds[0];
   const targetLetters = currentRound.targetWord.split('');
 
   useEffect(() => {
-    setRevealedIndices([]);
-    soundManager.speak(currentRound.sentence, 'en-US');
-  }, [currentStep]);
+    if (shuffledRounds.length > 0) {
+      setRevealedIndices([]);
+      soundManager.speak(currentRound.sentence, 'en-US');
+    }
+  }, [currentStep, shuffledRounds]);
 
   const handleSelectRole = (role: string) => {
     if (role === currentRound.role) {

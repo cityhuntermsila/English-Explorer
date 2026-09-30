@@ -66,6 +66,7 @@ export const Activity8Timetable: React.FC<ActivityProps> = ({
     },
   ];
 
+  const [shuffledSlots, setShuffledSlots] = useState<typeof scheduleSlots>([]);
   const [currentStep, setCurrentStep] = useState<number>(0);
   const [revealedIndices, setRevealedIndices] = useState<number[]>([]);
   const [hearts, setHearts] = useState<number>(5);
@@ -73,13 +74,21 @@ export const Activity8Timetable: React.FC<ActivityProps> = ({
   const [isListeningMic, setIsListeningMic] = useState<boolean>(false);
   const [transcript, setTranscript] = useState<string>('');
 
-  const currentRound = scheduleSlots[currentStep] || scheduleSlots[0];
+  // Shuffle schedule slots on component mount
+  useEffect(() => {
+    const shuffled = [...scheduleSlots].sort(() => Math.random() - 0.5);
+    setShuffledSlots(shuffled);
+  }, []);
+
+  const currentRound = shuffledSlots[currentStep] || scheduleSlots[currentStep] || scheduleSlots[0];
   const targetLetters = currentRound.targetWord.split('');
 
   useEffect(() => {
-    setRevealedIndices([]);
-    soundManager.speak(currentRound.sentence, 'en-US');
-  }, [currentStep]);
+    if (shuffledSlots.length > 0) {
+      setRevealedIndices([]);
+      soundManager.speak(currentRound.sentence, 'en-US');
+    }
+  }, [currentStep, shuffledSlots]);
 
   const handleSelectSubject = (subj: string) => {
     if (subj === currentRound.subject) {

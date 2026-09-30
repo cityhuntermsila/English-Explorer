@@ -112,7 +112,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#eef3f7] text-slate-800 antialiased selection:bg-amber-200">
+    <div className={`flex flex-col bg-[#eef3f7] text-slate-800 antialiased selection:bg-amber-200 ${currentActivityId === 'hub' ? 'min-h-screen' : 'h-screen h-[100dvh] overflow-hidden'}`}>
       {/* 1. TOP HUD (Visible uniquement sur le sommaire / hub, masqué durant les activités) */}
       {currentActivityId === 'hub' && (
         <TopHUD
@@ -127,8 +127,12 @@ export default function App() {
         />
       )}
 
-      {/* Main Container */}
-      <main className={`flex-1 w-full mx-auto flex flex-col ${currentActivityId === 'hub' ? 'max-w-6xl p-3 sm:p-5 gap-4' : 'max-w-5xl p-2 sm:p-4 gap-3'}`}>
+      {/* Main Container - Full viewport height constraint for gameplay screen */}
+      <main className={`w-full mx-auto flex flex-col ${
+        currentActivityId === 'hub'
+          ? 'flex-1 max-w-6xl p-3 sm:p-5 gap-4 overflow-y-auto'
+          : 'flex-1 h-full min-h-0 max-w-5xl p-1 sm:p-2 overflow-hidden'
+      }`}>
         {/* Hub / Sommaire View */}
         {currentActivityId === 'hub' && (
           <ActivityHub

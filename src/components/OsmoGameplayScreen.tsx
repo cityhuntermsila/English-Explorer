@@ -197,9 +197,9 @@ export const OsmoGameplayScreen: React.FC<OsmoGameplayScreenProps> = ({
   const isWordComplete = lettersArray.every((_, idx) => revealedIndices.includes(idx));
 
   return (
-    <div className="relative w-full rounded-3xl overflow-hidden shadow-2xl border-4 border-amber-300 bg-gradient-to-b from-[#38bdf8] via-[#0284c7] to-[#0369a1] text-white select-none">
+    <div className="w-full h-full min-h-0 flex flex-col overflow-hidden select-none rounded-2xl sm:rounded-3xl border-2 sm:border-4 border-amber-300 bg-gradient-to-b from-[#38bdf8] via-[#0284c7] to-[#0369a1] text-white shadow-2xl">
       {/* 1. TOP OSMO GAMEPLAY HUD (Exact look of Photos 1, 3, 4, 7) */}
-      <div className="flex flex-wrap items-center justify-between gap-3 px-4 sm:px-6 py-3 bg-white/10 backdrop-blur-md border-b border-white/20">
+      <div className="shrink-0 flex items-center justify-between gap-2 px-3 sm:px-6 py-2 sm:py-2.5 bg-white/10 backdrop-blur-md border-b border-white/20">
         {/* Left: Round Back button + Title */}
         <div className="flex items-center gap-2.5">
           <button
@@ -269,8 +269,8 @@ export const OsmoGameplayScreen: React.FC<OsmoGameplayScreenProps> = ({
         </div>
       </div>
 
-      {/* 2. CENTRAL VIVID VISUAL STAGE (Matches Photos 1, 3, 4, 7) */}
-      <div className="relative min-h-[340px] sm:min-h-[420px] flex flex-col justify-between p-4 sm:p-6 overflow-hidden">
+      {/* 2. CENTRAL VIVID VISUAL STAGE (Flex-1 min-h-0 for full viewport containment) */}
+      <div className="relative flex-1 min-h-0 flex flex-col justify-between p-2 sm:p-4 overflow-hidden">
         {/* Background Visual Scene */}
         <div className="absolute inset-0">
           <img

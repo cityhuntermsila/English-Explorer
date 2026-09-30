@@ -58,6 +58,7 @@ export const Activity5TalkMassi: React.FC<ActivityProps> = ({
     },
   ];
 
+  const [shuffledSteps, setShuffledSteps] = useState<typeof dialogueSteps>([]);
   const [currentStep, setCurrentStep] = useState<number>(0);
   const [revealedIndices, setRevealedIndices] = useState<number[]>([]);
   const [hearts, setHearts] = useState<number>(5);
@@ -66,13 +67,21 @@ export const Activity5TalkMassi: React.FC<ActivityProps> = ({
   const [transcript, setTranscript] = useState<string>('');
   const [isMassiSpeaking, setIsMassiSpeaking] = useState<boolean>(false);
 
-  const currentRound = dialogueSteps[currentStep] || dialogueSteps[0];
+  // Shuffle dialogue steps on component mount to randomize questions
+  useEffect(() => {
+    const shuffled = [...dialogueSteps].sort(() => Math.random() - 0.5);
+    setShuffledSteps(shuffled);
+  }, []);
+
+  const currentRound = shuffledSteps[currentStep] || dialogueSteps[currentStep] || dialogueSteps[0];
   const targetLetters = currentRound.targetWord.split('');
 
   useEffect(() => {
-    setRevealedIndices([]);
-    soundManager.speak(currentRound.question, 'en-US');
-  }, [currentStep]);
+    if (shuffledSteps.length > 0) {
+      setRevealedIndices([]);
+      soundManager.speak(currentRound.question, 'en-US');
+    }
+  }, [currentStep, shuffledSteps]);
 
   const handleSelectAnswer = (ans: string) => {
     soundManager.speak(ans, 'en-US');
